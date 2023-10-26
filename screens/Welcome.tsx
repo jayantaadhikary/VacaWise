@@ -7,8 +7,22 @@ import {
   Pressable,
 } from "react-native";
 
-const Welcome = () => {
-  const [isSignInCLicked, setIsSignInClicked] = useState(false);
+const Welcome = ({ navigation }) => {
+  const [isSignInClicked, setIsSignInClicked] = useState(false);
+
+  const handleCreateAccountPress = () => {
+    navigation.replace("SignUp");
+  };
+
+  const handleSignInPressIn = () => {
+    setIsSignInClicked(true);
+    console.log("Sign In pressed");
+  };
+
+  const handleSignInPressOut = () => {
+    setIsSignInClicked(false);
+    navigation.replace("SignIn");
+  };
 
   return (
     <View style={styles.container}>
@@ -25,21 +39,18 @@ const Welcome = () => {
               },
               styles.button,
             ]}
-            onPress={() => console.log("Create an Account pressed")}
+            onPress={handleCreateAccountPress}
           >
             <Text style={styles.buttonText}>Create an Account</Text>
           </Pressable>
           <Pressable
-            style={({ pressed }) => {
-              setIsSignInClicked(pressed); // Set the state on press
-              return {};
-            }}
-            onPress={() => console.log("Sign In pressed")}
+            onPressIn={handleSignInPressIn}
+            onPressOut={handleSignInPressOut}
           >
             <Text
               style={[
                 styles.signInText,
-                isSignInCLicked && { color: "#245a51" },
+                isSignInClicked && { color: "#245a51" },
               ]}
             >
               Already have an account? Sign In
