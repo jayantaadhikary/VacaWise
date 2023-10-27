@@ -1,6 +1,8 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 import Welcome from "./screens/Welcome";
 import SignIn from "./screens/SignIn";
@@ -9,8 +11,11 @@ import Home from "./screens/user/Home";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./config/firebase";
+import Profile from "./screens/user/Profile";
+import Search from "./screens/user/Search";
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 function AuthStack() {
   return (
@@ -24,9 +29,50 @@ function AuthStack() {
 
 function AuthenticatedStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Home" component={Home} />
-    </Stack.Navigator>
+    <Tab.Navigator screenOptions={{ headerShown: false }}>
+      <Tab.Screen
+        name="Home"
+        component={Home}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Ionicons
+              name={focused ? "ios-home" : "ios-home-outline"}
+              color="#367c72"
+              size={25}
+            />
+          ),
+          title: "",
+        }}
+      />
+      <Tab.Screen
+        name="Search"
+        component={Search}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Ionicons
+              name={focused ? "ios-search" : "ios-search-outline"}
+              color="#367c72"
+              size={25}
+            />
+          ),
+          title: "",
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Ionicons
+              name={focused ? "ios-person" : "ios-person-outline"}
+              color="#367c72"
+              size={25}
+            />
+          ),
+          title: "",
+        }}
+      />
+    </Tab.Navigator>
   );
 }
 

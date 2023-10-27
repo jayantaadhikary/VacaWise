@@ -4,15 +4,9 @@ import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase";
 
 const Home = () => {
-  const handleLogout = async () => {
-    await signOut(auth);
-  };
-
   return (
     <View style={styles.container}>
       <Text>Home</Text>
-      <Text>Current User: {auth.currentUser?.email}</Text>
-      <Button title="Logout" onPress={handleLogout} />
     </View>
   );
 };
