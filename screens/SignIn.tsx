@@ -5,13 +5,19 @@ import {
   Image,
   TextInput,
   Pressable,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../config/firebase";
 
 const SignIn = () => {
   const [forgotPasswordClicked, setForgotPasswordClicked] = useState(false);
   const [createAccClicked, setCreateAccClicked] = useState(false);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const navigation: any = useNavigation();
 
@@ -26,7 +32,6 @@ const SignIn = () => {
 
   function handleCreateAccountPressIn() {
     setCreateAccClicked(true);
-    console.log("Create Account pressed");
   }
 
   function handleCreateAccountPressOut() {
@@ -34,8 +39,21 @@ const SignIn = () => {
     navigation.replace("SignUp");
   }
 
-  function handleSignIn() {
-    console.log("Sign In pressed");
+  async function handleSignIn() {
+    if (email === "" || password === "") {
+      Alert.alert("Please fill out all fields");
+    }
+    try {
+      const userCredentials = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredentials.user;
+      console.log("Logged in as " + user.email);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   return (
@@ -48,15 +66,20 @@ const SignIn = () => {
         />
         <View>
           <TextInput
+            autoCapitalize="none"
             style={styles.input}
             placeholder="Email"
             placeholderTextColor="#aaaaaa"
+            value={email}
+            onChangeText={(text) => setEmail(text)}
           />
           <TextInput
             style={styles.input}
             placeholder="Password"
             placeholderTextColor="#aaaaaa"
             secureTextEntry={true}
+            value={password}
+            onChangeText={(text) => setPassword(text)}
           />
         </View>
         <View style={{ marginTop: 10, marginBottom: 20 }}>
