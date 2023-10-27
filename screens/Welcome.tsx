@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import {
   StyleSheet,
@@ -7,8 +8,10 @@ import {
   Pressable,
 } from "react-native";
 
-const Welcome = ({ navigation }) => {
+const Welcome = () => {
   const [isSignInClicked, setIsSignInClicked] = useState(false);
+
+  const navigation: any = useNavigation();
 
   const handleCreateAccountPress = () => {
     navigation.replace("SignUp");
