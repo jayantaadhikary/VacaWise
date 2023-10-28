@@ -36,7 +36,7 @@ function AuthenticatedStack() {
         options={{
           tabBarIcon: ({ focused }) => (
             <Ionicons
-              name={focused ? "ios-home" : "ios-home-outline"}
+              name={focused ? "ios-compass" : "ios-compass-outline"}
               color="#367c72"
               size={25}
             />
