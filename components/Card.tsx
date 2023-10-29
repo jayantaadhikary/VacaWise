@@ -1,8 +1,18 @@
 import { useState } from "react";
 import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 
-const Card = () => {
+type cardProps = {
+  name: string;
+  description: string;
+  image: string;
+};
+
+const Card = ({ name, image, description }: cardProps) => {
   const [readMeClicked, setReadMeClicked] = useState(false);
+
+  const words: any = description.split(" ");
+  const first15Words = words.slice(0, 11);
+  const newDescription = first15Words.join(" ");
 
   function handleReadPressIn() {
     setReadMeClicked(true);
@@ -14,14 +24,9 @@ const Card = () => {
 
   return (
     <View style={styles.cardContainer}>
-      <Image
-        style={styles.cardImage}
-        source={{ uri: "https://picsum.photos/200/300" }}
-      />
-      <Text style={styles.cardTitle}>Card Title</Text>
-      <Text style={styles.cardDescription}>
-        Description about the card is written here...
-      </Text>
+      <Image style={styles.cardImage} source={{ uri: image }} />
+      <Text style={styles.cardTitle}>{name}</Text>
+      <Text style={styles.cardDescription}>{newDescription}...</Text>
       <Pressable
         onPressIn={handleReadPressIn}
         onPressOut={handleReadPressOut}

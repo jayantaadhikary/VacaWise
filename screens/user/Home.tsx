@@ -6,9 +6,13 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ScrollView,
+  Image,
+  FlatList,
 } from "react-native";
 import React from "react";
 import Card from "../../components/Card";
+import { ExploreData as data } from "../../data/data";
+import SmallCard from "../../components/SmallCard";
 
 const Home = () => {
   return (
@@ -19,13 +23,36 @@ const Home = () => {
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View style={styles.cardsContainer}>
-            <Card />
-            <Card />
-            <Card />
+            {data.map((item) => {
+              return (
+                <Card
+                  key={item.id}
+                  name={item.name}
+                  description={item.description}
+                  image={item.image}
+                />
+              );
+            })}
           </View>
         </ScrollView>
         <View>
-          <Text>Destinations by Season</Text>
+          <Text style={[styles.title, { fontSize: 20 }]}>
+            Popular Destinations
+          </Text>
+          <ScrollView>
+            {data.map((item) => {
+              return (
+                <SmallCard key={item.id} name={item.name} image={item.image} />
+              );
+            })}
+            {/* <FlatList
+              data={data}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <SmallCard name={item.name} image={item.image} />
+              )}
+            /> */}
+          </ScrollView>
         </View>
       </ScrollView>
     </SafeAreaView>
