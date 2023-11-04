@@ -1,4 +1,11 @@
-export const ExploreData = [
+type placeData = {
+  id: string;
+  name: string;
+  image: string;
+  description: string;
+};
+
+export const ExploreData: placeData[] = [
   {
     id: "0",
     name: "Bali",
@@ -27,7 +34,7 @@ export const ExploreData = [
     id: "3",
     name: "Macau",
     image:
-      "https://images.unsplash.com/photo-1556629538-fc3eba61504e?auto=format&fit=crop&q=80&w=3164&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1589369125429-cad824743af3?auto=format&fit=crop&q=80&w=3087&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     description:
       "Macau is a special administrative region of the People's Republic of China in the western Pearl River Delta by the South China Sea. With a population of about 680,000 and an area of 32.9 km2, it is the most densely populated region in the world.",
   },

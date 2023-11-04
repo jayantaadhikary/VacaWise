@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./config/firebase";
 import Profile from "./screens/user/Profile";
-import Search from "./screens/user/Search";
+import Blog from "./screens/user/Blog";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -45,12 +45,12 @@ function AuthenticatedStack() {
         }}
       />
       <Tab.Screen
-        name="Search"
-        component={Search}
+        name="Blog"
+        component={Blog}
         options={{
           tabBarIcon: ({ focused }) => (
             <Ionicons
-              name={focused ? "ios-search" : "ios-search-outline"}
+              name={focused ? "ios-book" : "ios-book-outline"}
               color="#367c72"
               size={25}
             />

@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "bold",
     // color: "#245a51",
-    marginTop: 20,
+    marginTop: 10,
     marginLeft: 8,
   },
   cardsContainer: {

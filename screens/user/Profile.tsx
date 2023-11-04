@@ -1,9 +1,34 @@
 import { View, Text, StyleSheet, Button } from "react-native";
-import React from "react";
+import { useEffect, useState } from "react";
 import { signOut } from "firebase/auth";
-import { auth } from "../../config/firebase";
+import { auth, firestore } from "../../config/firebase";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 const Profile = () => {
+  const [userDetails, setUserDetails] = useState({
+    fullName: "",
+    email: "",
+  });
+
+  useEffect(() => {
+    // fetch user details
+    const user = auth.currentUser;
+
+    if (user) {
+      const email = user.email;
+
+      const db = collection(firestore, "users");
+
+      const q = query(db, where("email", "==", email));
+
+      const querySnapshot = getDocs(q).then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          setUserDetails(doc.data());
+        });
+      });
+    }
+  }, []);
+
   const handleLogout = async () => {
     await signOut(auth);
   };
@@ -11,7 +36,8 @@ const Profile = () => {
   return (
     <View style={styles.container}>
       <Text>Profile</Text>
-      <Text>Current User: {auth.currentUser?.email}</Text>
+      <Text>Current User: {userDetails.fullName}</Text>
+      <Text>Email: {userDetails.email}</Text>
       <Button title="Logout" onPress={handleLogout} />
     </View>
   );

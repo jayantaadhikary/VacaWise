@@ -11,6 +11,7 @@ import {
   ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { firestore } from "../config/firebase";
 
 import { auth } from "../config/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -56,7 +57,7 @@ const SignUp = () => {
 
         // Add user to Firestore
         const db = getFirestore();
-        const userCollection = collection(db, "users");
+        const userCollection = collection(firestore, "users");
         await addDoc(userCollection, {
           email: email,
           fullName: fullName,
