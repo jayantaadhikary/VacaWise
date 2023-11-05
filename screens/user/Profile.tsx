@@ -7,43 +7,16 @@ import {
   Alert,
   ScrollView,
 } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { signOut } from "firebase/auth";
 import { auth, firestore } from "../../config/firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
 import { Avatar } from "@rneui/themed";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import ClickableButton from "../../components/ClickableButton";
-
-type UserType = {
-  fullName: string;
-  email: string;
-};
+import { UserDataContext } from "../../store/UserDataContext";
 
 const Profile = () => {
-  const [userDetails, setUserDetails] = useState({
-    fullName: "",
-    email: "",
-  });
-
-  useEffect(() => {
-    // fetch user details
-    const user = auth.currentUser;
-
-    if (user) {
-      const email = user.email;
-
-      const db = collection(firestore, "users");
-
-      const q = query(db, where("email", "==", email));
-
-      const querySnapshot = getDocs(q).then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          setUserDetails(doc.data() as UserType);
-        });
-      });
-    }
-  }, []);
+  const { userDetails, setUserDetails }: any = useContext(UserDataContext);
 
   const handleLogout = () => {
     Alert.alert("Logout", "Are you sure you want to logout?", [
@@ -79,7 +52,7 @@ const Profile = () => {
           rounded
           title={userDetails.fullName
             .split(" ")
-            .map((n) => n[0])
+            .map((n: any) => n[0])
             .join("")}
           containerStyle={{ backgroundColor: "#245a51" }}
         />

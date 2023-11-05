@@ -3,16 +3,19 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useEffect, useState, useContext } from "react";
 
 import Welcome from "./screens/Welcome";
 import SignIn from "./screens/SignIn";
 import SignUp from "./screens/SignUp";
 import Home from "./screens/user/Home";
-import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./config/firebase";
 import Profile from "./screens/user/Profile";
 import Blog from "./screens/user/Blog";
+
+import { auth, firestore } from "./config/firebase";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
+import UserDataProvider, { UserDataContext } from "./store/UserDataContext";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -28,6 +31,27 @@ function AuthStack() {
 }
 
 function AuthenticatedStack() {
+  const { userDetails, setUserDetails }: any = useContext(UserDataContext);
+
+  useEffect(() => {
+    // fetch user details
+    const user = auth.currentUser;
+
+    if (user) {
+      const email = user.email;
+
+      const db = collection(firestore, "users");
+
+      const q = query(db, where("email", "==", email));
+
+      const querySnapshot = getDocs(q).then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          setUserDetails(doc.data() as any);
+        });
+      });
+    }
+  }, []);
+
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
       <Tab.Screen
@@ -102,8 +126,10 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      {user != null ? <AuthenticatedStack /> : <AuthStack />}
-    </NavigationContainer>
+    <UserDataProvider>
+      <NavigationContainer>
+        {user != null ? <AuthenticatedStack /> : <AuthStack />}
+      </NavigationContainer>
+    </UserDataProvider>
   );
 }
