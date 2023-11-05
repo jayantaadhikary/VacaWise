@@ -23,7 +23,14 @@ const Card = ({ name, image, description }: cardProps) => {
   }
 
   return (
-    <View style={styles.cardContainer}>
+    <Pressable
+      style={[
+        styles.cardContainer,
+        readMeClicked && { backgroundColor: "#e6f7f2" },
+      ]}
+      onPressIn={handleReadPressIn}
+      onPressOut={handleReadPressOut}
+    >
       <Image style={styles.cardImage} source={{ uri: image }} />
       <Text style={styles.cardTitle}>{name}</Text>
       <Text style={styles.cardDescription}>{newDescription}...</Text>
@@ -36,7 +43,7 @@ const Card = ({ name, image, description }: cardProps) => {
           Read More →
         </Text>
       </Pressable>
-    </View>
+    </Pressable>
   );
 };
 
@@ -44,8 +51,8 @@ export default Card;
 
 const styles = StyleSheet.create({
   cardContainer: {
-    marginLeft: 8,
-    marginRight: 2,
+    marginLeft: 6,
+    marginRight: 4,
     marginBottom: 10,
     backgroundColor: "white",
     borderRadius: 12,

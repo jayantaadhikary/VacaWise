@@ -6,6 +6,7 @@ import {
   TextInput,
   Pressable,
   Alert,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
@@ -57,7 +58,7 @@ const SignIn = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
       <Text style={styles.header}>Login</Text>
       <View style={{ marginBottom: 100 }}>
         <Image
@@ -120,7 +121,7 @@ const SignIn = () => {
           <Text style={styles.loginButtonText}>Login</Text>
         </Pressable>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
