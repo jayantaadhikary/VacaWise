@@ -8,6 +8,7 @@ import {
   ScrollView,
   Image,
   FlatList,
+
 } from "react-native";
 import React from "react";
 import Card from "../../components/Card";
@@ -76,5 +77,7 @@ const styles = StyleSheet.create({
     // flex: 1,
     flexDirection: "row",
     marginTop: 10,
+    // paddingBottom: 10,
+    // marginBottom: 10,
   },
 });
