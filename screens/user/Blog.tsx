@@ -8,11 +8,20 @@ import {
   TextInput,
   Button,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import DateTimePicker from "react-native-modal-datetime-picker";
+import { useContext } from "react";
+import { UserDataContext } from "../../store/UserDataContext";
+import { firestore } from "../../config/firebase";
+import { collection, addDoc, query, getDocs } from "firebase/firestore";
+import SmallPost from "../../components/SmallPost";
 
 const Blog = () => {
+  const { userDetails }: any = useContext(UserDataContext);
+
+  const [posts, setPosts] = useState([]);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [date, setDate] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
@@ -20,6 +29,27 @@ const Blog = () => {
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
   const [image, setImage] = useState(null);
+
+  useEffect(() => {
+    // console.log(userDetails);
+
+    const fetchPosts = async () => {
+      try {
+        const postsQuery = query(collection(firestore, "posts"));
+        const querySnapshot = await getDocs(postsQuery);
+
+        const allPosts: any = [];
+
+        querySnapshot.forEach((doc) => {
+          allPosts.push(doc.data());
+        });
+        setPosts(allPosts);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchPosts();
+  }, [posts]);
 
   const showDatePicker = () => {
     setDatePickerVisible(true);
@@ -34,19 +64,51 @@ const Blog = () => {
     hideDatePicker();
   };
 
-  function createAPost() {
+  function clickPostIcon() {
     setModalVisible(true);
   }
 
-  function submitPost() {}
+  async function submitPost() {
+    const post = {
+      user: userDetails.email,
+      name: userDetails.fullName,
+      title,
+      description,
+      location,
+      date,
+    };
+
+    try {
+      const postsCollection = collection(firestore, "posts");
+      await addDoc(postsCollection, post);
+      console.log("Post added successfully" + post);
+    } catch (err) {
+      console.log(err);
+    }
+
+    setModalVisible(false);
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Stories</Text>
-        <TouchableOpacity onPress={createAPost}>
+        <TouchableOpacity onPress={clickPostIcon}>
           <Ionicons name="create-outline" size={24} color="black" />
         </TouchableOpacity>
+      </View>
+
+      <View>
+        {posts.map((post: any) => (
+          <SmallPost
+            key={`${post.title}-${post.date
+              .toDate()
+              .toLocaleDateString("en-US")}`}
+            title={post.title}
+            location={post.location}
+            date={post.date.toDate().toLocaleDateString("en-US")}
+          />
+        ))}
       </View>
 
       <Modal
@@ -71,9 +133,10 @@ const Blog = () => {
 
             <Text style={styles.label}>Description</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, { minHeight: 100 }]}
               placeholder="Description"
               onChangeText={(val) => setDescription(val)}
+              multiline={true}
             />
 
             <Text style={styles.label}>Location</Text>
@@ -82,13 +145,6 @@ const Blog = () => {
               placeholder="Location"
               onChangeText={(val) => setLocation(val)}
             />
-
-            {/* <Text style={styles.label}>Date</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Date"
-              onChangeText={(val) => setDate(val)}
-            /> */}
             <TouchableOpacity onPress={showDatePicker}>
               <Text style={styles.label}>Date</Text>
               <Text style={styles.input}>{date.toDateString()}</Text>
@@ -101,11 +157,11 @@ const Blog = () => {
               onCancel={hideDatePicker}
               display="inline"
             />
-
             <Text style={styles.label}>Image</Text>
             <TextInput
+              editable={false}
               style={styles.input}
-              placeholder="Image"
+              placeholder="Feature not added yet!"
               onChangeText={(val: any) => setImage(val)}
             />
 
