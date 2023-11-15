@@ -1,5 +1,12 @@
-import { SafeAreaView, View, Text, StyleSheet } from "react-native";
-import { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
 import { UserDataContext } from "../../../store/UserDataContext";
 import { firestore } from "../../../config/firebase";
 import { collection, query, getDocs, where } from "firebase/firestore";
@@ -8,6 +15,7 @@ import SmallPost from "../../../components/SmallPost";
 const MyPosts = () => {
   const { userDetails }: any = useContext(UserDataContext);
   const [myPosts, setMyPosts] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   async function getMyPosts() {
     try {
@@ -28,26 +36,44 @@ const MyPosts = () => {
     }
   }
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    getMyPosts();
+    setRefreshing(false);
+  };
+
   useEffect(() => {
     getMyPosts();
   }, []);
 
   return (
-    <View style={styles.container}>
-      <View>
-        {myPosts.map((post: any) => (
-          <SmallPost
-            key={`${post.title}-${post.date
-              .toDate()
-              .toLocaleDateString("en-US")}`}
-            title={post.title}
-            location={post.location}
-            date={post.date.toDate().toLocaleDateString("en-US")}
-            description={post.description}
-          />
-        ))}
-      </View>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        {myPosts.length === 0 && (
+          <View style={{ alignItems: "center", marginTop: 20 }}>
+            <Text style={{ fontSize: 20 }}>No posts yet</Text>
+          </View>
+        )}
+        <View>
+          {myPosts.map((post: any) => (
+            <SmallPost
+              key={`${post.title}-${post.date
+                .toDate()
+                .toLocaleDateString("en-US")}`}
+              title={post.title}
+              location={post.location}
+              date={post.date.toDate().toLocaleDateString("en-US")}
+              description={post.description}
+            />
+          ))}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

@@ -5,8 +5,19 @@ import {
   TouchableOpacity,
   Modal,
   SafeAreaView,
+  Alert,
 } from "react-native";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { UserDataContext } from "../store/UserDataContext";
+import { firestore } from "../config/firebase";
+import {
+  query,
+  collection,
+  where,
+  getDocs,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 type smallPostProps = {
@@ -24,7 +35,34 @@ const SmallPost = ({
   description,
   name,
 }: smallPostProps) => {
+  const { userDetails }: any = useContext(UserDataContext);
+
   const [modalVisible, setModalVisible] = useState(false);
+
+  async function deletePost() {
+    try {
+      const postQuery = query(
+        collection(firestore, "posts"),
+        where("title", "==", title),
+        where("user", "==", userDetails.email)
+      );
+      const querySnapshot = await getDocs(postQuery);
+
+      if (querySnapshot.docs.length > 0) {
+        const postDoc = querySnapshot.docs[0];
+        // Delete the post from the Firestore collection
+        await deleteDoc(doc(firestore, "posts", postDoc.id));
+        // Close the modal after deletion
+        setModalVisible(false);
+      } else {
+        console.error("Post not found");
+        // Handle the error, e.g., show an alert
+        Alert.alert("Error", "Could not find the post to delete.");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   function viewDetails() {
     setModalVisible(true);
@@ -71,13 +109,30 @@ const SmallPost = ({
               {description}
             </Text>
           </View>
+          {/* Only show the delete button if the user is the owner of the post */}
+          {!name && (
+            <View>
+              <TouchableOpacity
+                style={{
+                  // backgroundColor: "red",
+                  margin: 10,
+                  // padding: 10,
+                  // borderRadius: 10,
+                  alignItems: "center",
+                }}
+                onPress={deletePost}
+              >
+                <Text style={{ color: "black", fontSize: 16 }}>
+                  <Ionicons name="trash-outline" size={30} color="red" />{" "}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </SafeAreaView>
       </Modal>
     </>
   );
 };
-
-export default SmallPost;
 
 const styles = StyleSheet.create({
   card: {
@@ -109,3 +164,5 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 });
+
+export default SmallPost;
