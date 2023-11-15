@@ -43,6 +43,7 @@ const MyPosts = () => {
             title={post.title}
             location={post.location}
             date={post.date.toDate().toLocaleDateString("en-US")}
+            description={post.description}
           />
         ))}
       </View>
