@@ -7,15 +7,15 @@ import {
   Modal,
   TextInput,
   Button,
+  RefreshControl,
+  ScrollView,
 } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import DateTimePicker from "react-native-modal-datetime-picker";
-import { useContext } from "react";
 import { UserDataContext } from "../../store/UserDataContext";
 import { firestore } from "../../config/firebase";
 import { collection, addDoc, query, getDocs } from "firebase/firestore";
-import { PanGestureHandler, State } from "react-native-gesture-handler";
 
 import SmallPost from "../../components/SmallPost";
 
@@ -32,6 +32,8 @@ const Blog = () => {
   const [location, setLocation] = useState("");
   const [image, setImage] = useState(null);
 
+  const [refreshing, setRefreshing] = useState(false);
+
   const fetchPosts = async () => {
     try {
       const postsQuery = query(collection(firestore, "posts"));
@@ -46,6 +48,12 @@ const Blog = () => {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchPosts();
+    setRefreshing(false);
   };
 
   useEffect(() => {
@@ -99,7 +107,12 @@ const Blog = () => {
         </TouchableOpacity>
       </View>
 
-      <View>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         {posts.map((post: any) => (
           <SmallPost
             key={`${post.title}-${post.date
@@ -112,7 +125,7 @@ const Blog = () => {
             name={post.name}
           />
         ))}
-      </View>
+      </ScrollView>
 
       <Modal
         animationType="slide"

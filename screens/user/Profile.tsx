@@ -78,7 +78,7 @@ const Profile = ({ navigation }: any) => {
             navigation.navigate("MyPosts");
           }}
         />
-        <ClickableButton text="Saved Posts" imageName="bookmark-outline" />
+        {/* <ClickableButton text="Saved Posts" imageName="bookmark-outline" /> */}
         <ClickableButton text="Help" imageName="help-circle-outline" />
         <ClickableButton
           text="Invite a friend"
