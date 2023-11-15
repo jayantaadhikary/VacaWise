@@ -118,11 +118,7 @@ const Blog = () => {
             key={`${post.title}-${post.date
               .toDate()
               .toLocaleDateString("en-US")}`}
-            title={post.title}
-            location={post.location}
-            date={post.date.toDate().toLocaleDateString("en-US")}
-            description={post.description}
-            name={post.name}
+            post={post}
           />
         ))}
       </ScrollView>
@@ -139,50 +135,52 @@ const Blog = () => {
               <Ionicons name="close-outline" size={24} color="black" />
             </TouchableOpacity>
           </View>
-          <View>
-            <Text style={styles.label}>Title</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Title"
-              onChangeText={(val) => setTitle(val)}
-            />
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View>
+              <Text style={styles.label}>Title</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Title"
+                onChangeText={(val) => setTitle(val)}
+              />
 
-            <Text style={styles.label}>Description</Text>
-            <TextInput
-              style={[styles.input, { minHeight: 100 }]}
-              placeholder="Description"
-              onChangeText={(val) => setDescription(val)}
-              multiline={true}
-            />
+              <Text style={styles.label}>Description</Text>
+              <TextInput
+                style={[styles.input, { minHeight: 100 }]}
+                placeholder="Description"
+                onChangeText={(val) => setDescription(val)}
+                multiline={true}
+              />
 
-            <Text style={styles.label}>Location</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Location"
-              onChangeText={(val) => setLocation(val)}
-            />
-            <TouchableOpacity onPress={showDatePicker}>
-              <Text style={styles.label}>Date</Text>
-              <Text style={styles.input}>{date.toDateString()}</Text>
-            </TouchableOpacity>
+              <Text style={styles.label}>Location</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Location"
+                onChangeText={(val) => setLocation(val)}
+              />
+              <TouchableOpacity onPress={showDatePicker}>
+                <Text style={styles.label}>Date</Text>
+                <Text style={styles.input}>{date.toDateString()}</Text>
+              </TouchableOpacity>
 
-            <DateTimePicker
-              isVisible={isDatePickerVisible}
-              mode="date"
-              onConfirm={handleDateConfirm}
-              onCancel={hideDatePicker}
-              display="inline"
-            />
-            <Text style={styles.label}>Image</Text>
-            <TextInput
-              editable={false}
-              style={styles.input}
-              placeholder="Feature not added yet!"
-              onChangeText={(val: any) => setImage(val)}
-            />
+              <DateTimePicker
+                isVisible={isDatePickerVisible}
+                mode="date"
+                onConfirm={handleDateConfirm}
+                onCancel={hideDatePicker}
+                display="inline"
+              />
+              <Text style={styles.label}>Image</Text>
+              <TextInput
+                editable={false}
+                style={styles.input}
+                placeholder="Feature not added yet!"
+                onChangeText={(val: any) => setImage(val)}
+              />
 
-            <Button title="Submit" onPress={submitPost} />
-          </View>
+              <Button title="Submit" onPress={submitPost} />
+            </View>
+          </ScrollView>
         </SafeAreaView>
       </Modal>
     </SafeAreaView>

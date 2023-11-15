@@ -65,10 +65,7 @@ const MyPosts = () => {
               key={`${post.title}-${post.date
                 .toDate()
                 .toLocaleDateString("en-US")}`}
-              title={post.title}
-              location={post.location}
-              date={post.date.toDate().toLocaleDateString("en-US")}
-              description={post.description}
+              post={post}
             />
           ))}
         </View>

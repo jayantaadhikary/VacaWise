@@ -20,25 +20,14 @@ import {
 } from "firebase/firestore";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-type smallPostProps = {
-  title: string;
-  location: string;
-  date: string;
-  description: string;
-  name?: string;
-};
-
-const SmallPost = ({
-  title,
-  location,
-  date,
-  description,
-  name,
-}: smallPostProps) => {
+const SmallPost = ({ post }: any) => {
   const { userDetails }: any = useContext(UserDataContext);
 
-  const [modalVisible, setModalVisible] = useState(false);
+  const { title, location, date: postDate, description, name } = post;
 
+  const date = postDate.toDate().toDateString();
+
+  const [modalVisible, setModalVisible] = useState(false);
   async function deletePost() {
     try {
       const postQuery = query(
@@ -110,7 +99,7 @@ const SmallPost = ({
             </Text>
           </View>
           {/* Only show the delete button if the user is the owner of the post */}
-          {!name && (
+          {name == userDetails.fullName && (
             <View>
               <TouchableOpacity
                 style={{
