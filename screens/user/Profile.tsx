@@ -15,7 +15,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import ClickableButton from "../../components/ClickableButton";
 import { UserDataContext } from "../../store/UserDataContext";
 
-const Profile = () => {
+const Profile = ({ navigation }: any) => {
   const { userDetails, setUserDetails }: any = useContext(UserDataContext);
 
   const handleLogout = () => {
@@ -71,14 +71,20 @@ const Profile = () => {
           text="Edit Profile"
           imageName="person-circle-outline"
         />
-        <ClickableButton text="My Posts" imageName="list-outline" />
+        <ClickableButton
+          text="My Posts"
+          imageName="list-outline"
+          func={() => {
+            navigation.navigate("MyPosts");
+          }}
+        />
         <ClickableButton text="Saved Posts" imageName="bookmark-outline" />
-        <ClickableButton text="Settings" imageName="settings-outline" />
         <ClickableButton text="Help" imageName="help-circle-outline" />
         <ClickableButton
           text="Invite a friend"
           imageName="person-add-outline"
         />
+        {/* <ClickableButton text="Delete Account!?!" imageName="trash-outline" /> */}
       </ScrollView>
     </SafeAreaView>
   );

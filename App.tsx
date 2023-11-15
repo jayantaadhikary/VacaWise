@@ -11,6 +11,7 @@ import SignUp from "./screens/SignUp";
 import Home from "./screens/user/Home";
 import Profile from "./screens/user/Profile";
 import Blog from "./screens/user/Blog";
+import MyPosts from "./screens/user/sub-screens/MyPosts";
 
 import { auth, firestore } from "./config/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
@@ -83,8 +84,8 @@ function AuthenticatedStack() {
         }}
       />
       <Tab.Screen
-        name="Profile"
-        component={Profile}
+        name="ProfileStack"
+        component={ProfileStack}
         options={{
           tabBarIcon: ({ focused }) => (
             <Ionicons
@@ -97,6 +98,23 @@ function AuthenticatedStack() {
         }}
       />
     </Tab.Navigator>
+  );
+}
+
+function ProfileStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="MyPosts"
+        component={MyPosts}
+        options={{ headerTitle: "My Posts" }}
+      />
+    </Stack.Navigator>
   );
 }
 

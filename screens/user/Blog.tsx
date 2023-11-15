@@ -15,6 +15,8 @@ import { useContext } from "react";
 import { UserDataContext } from "../../store/UserDataContext";
 import { firestore } from "../../config/firebase";
 import { collection, addDoc, query, getDocs } from "firebase/firestore";
+import { PanGestureHandler, State } from "react-native-gesture-handler";
+
 import SmallPost from "../../components/SmallPost";
 
 const Blog = () => {
@@ -30,26 +32,25 @@ const Blog = () => {
   const [location, setLocation] = useState("");
   const [image, setImage] = useState(null);
 
+  const fetchPosts = async () => {
+    try {
+      const postsQuery = query(collection(firestore, "posts"));
+      const querySnapshot = await getDocs(postsQuery);
+
+      const allPosts: any = [];
+
+      querySnapshot.forEach((doc) => {
+        allPosts.push(doc.data());
+      });
+      setPosts(allPosts);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
-    // console.log(userDetails);
-
-    const fetchPosts = async () => {
-      try {
-        const postsQuery = query(collection(firestore, "posts"));
-        const querySnapshot = await getDocs(postsQuery);
-
-        const allPosts: any = [];
-
-        querySnapshot.forEach((doc) => {
-          allPosts.push(doc.data());
-        });
-        setPosts(allPosts);
-      } catch (err) {
-        console.log(err);
-      }
-    };
     fetchPosts();
-  }, [posts]);
+  }, []);
 
   const showDatePicker = () => {
     setDatePickerVisible(true);

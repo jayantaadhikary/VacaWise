@@ -11,7 +11,7 @@ type ClickableButtonProps = {
 const ClickableButton = ({ text, func, imageName }: ClickableButtonProps) => {
   return (
     <View>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={func}>
         <View style={styles.clickableOption}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
