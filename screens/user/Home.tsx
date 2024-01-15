@@ -8,7 +8,6 @@ import {
   ScrollView,
   Image,
   FlatList,
-
 } from "react-native";
 import React from "react";
 import Card from "../../components/Card";
@@ -46,13 +45,6 @@ const Home = () => {
                 <SmallCard key={item.id} name={item.name} image={item.image} />
               );
             })}
-            {/* <FlatList
-              data={data}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                <SmallCard name={item.name} image={item.image} />
-              )}
-            /> */}
           </ScrollView>
         </View>
       </ScrollView>

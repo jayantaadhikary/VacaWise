@@ -10,12 +10,14 @@ import {
   RefreshControl,
   ScrollView,
 } from "react-native";
+import { uploadBytesResumable, getDownloadURL, ref } from "firebase/storage";
 import { useEffect, useState, useContext } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { UserDataContext } from "../../store/UserDataContext";
-import { firestore } from "../../config/firebase";
+import { firestore, storage } from "../../config/firebase";
 import { collection, addDoc, query, getDocs } from "firebase/firestore";
+import * as ImagePicker from "expo-image-picker";
 
 import SmallPost from "../../components/SmallPost";
 
@@ -30,9 +32,22 @@ const Blog = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState("");
 
   const [refreshing, setRefreshing] = useState(false);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [3, 4],
+      quality: 0.75,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
 
   const fetchPosts = async () => {
     try {
@@ -78,16 +93,28 @@ const Blog = () => {
   }
 
   async function submitPost() {
-    const post = {
-      user: userDetails.email,
-      name: userDetails.fullName,
-      title,
-      description,
-      location,
-      date,
-    };
-
+    if (!title || !description || !location || !image) {
+      alert("Please fill all fields");
+      return;
+    }
     try {
+      const response = await fetch(image);
+      const blob = await response.blob();
+
+      const storageRef = ref(storage, `posts/${new Date().getTime()}`);
+      await uploadBytesResumable(storageRef, blob);
+      const imageUrl = await getDownloadURL(storageRef);
+
+      const post = {
+        user: userDetails.email,
+        name: userDetails.fullName,
+        title,
+        description,
+        location,
+        date,
+        imageUrl,
+      };
+
       const postsCollection = collection(firestore, "posts");
       await addDoc(postsCollection, post);
       console.log("Post added successfully" + post);
@@ -171,12 +198,9 @@ const Blog = () => {
                 display="inline"
               />
               <Text style={styles.label}>Image</Text>
-              <TextInput
-                editable={false}
-                style={styles.input}
-                placeholder="Feature not added yet!"
-                onChangeText={(val: any) => setImage(val)}
-              />
+              <TouchableOpacity onPress={pickImage}>
+                <Text style={styles.input}>Upload Image</Text>
+              </TouchableOpacity>
 
               <Button title="Submit" onPress={submitPost} />
             </View>
