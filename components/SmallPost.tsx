@@ -6,10 +6,11 @@ import {
   Modal,
   SafeAreaView,
   Alert,
+  Image,
 } from "react-native";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { UserDataContext } from "../store/UserDataContext";
-import { firestore } from "../config/firebase";
+import { firestore, storage } from "../config/firebase";
 import {
   query,
   collection,
@@ -19,15 +20,31 @@ import {
   doc,
 } from "firebase/firestore";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { getDownloadURL, ref } from "firebase/storage";
 
 const SmallPost = ({ post }: any) => {
   const { userDetails }: any = useContext(UserDataContext);
 
-  const { title, location, date: postDate, description, name } = post;
+  const { title, location, date: postDate, description, name, imageUrl } = post;
 
   const date = postDate.toDate().toDateString();
+  const [imageUri, setImageUri] = useState("");
+
+  useEffect(() => {
+    const loadImage = async () => {
+      try {
+        const imageRef = ref(storage, imageUrl);
+        const uri = await getDownloadURL(imageRef);
+        setImageUri(uri);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    loadImage();
+  }, [imageUrl]);
 
   const [modalVisible, setModalVisible] = useState(false);
+
   async function deletePost() {
     try {
       const postQuery = query(
@@ -78,22 +95,34 @@ const SmallPost = ({ post }: any) => {
               <Ionicons name="close-outline" size={24} color="black" />
             </TouchableOpacity>
           </View>
+
           {name && (
             <View style={{ margin: 10 }}>
               <Text style={{ fontSize: 16, fontWeight: "600" }}>Posted By</Text>
               <Text style={{ fontSize: 14 }}>{name}</Text>
             </View>
           )}
+
+          {imageUri && (
+            <Image
+              source={{ uri: imageUri }}
+              style={{ width: "100%", height: 200 }}
+              resizeMode="cover"
+            />
+          )}
+
           <View style={{ margin: 10 }}>
             <Text style={{ fontSize: 16, fontWeight: "600" }}>Date</Text>
             <Text style={{ fontSize: 14, marginBottom: 10 }}>{date}</Text>
             <Text style={{ fontSize: 16, fontWeight: "600" }}>Location</Text>
             <Text style={{ fontSize: 14 }}>{location}</Text>
           </View>
+
           <View style={{ margin: 10 }}>
             <Text style={{ fontSize: 20, fontWeight: "600", marginBottom: 5 }}>
               Description
             </Text>
+
             <Text style={{ fontSize: 14, marginBottom: 10 }}>
               {description}
             </Text>
